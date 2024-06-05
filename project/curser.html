@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Reload Button with Stylish Cursor</title>
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0; /* Light background to make the cursor more visible */
+        }
+
+        .reload-button {
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, gold, red);
+            clip-path: polygon(0 0, 100% 50%, 0 100%);
+            pointer-events: none;
+            mix-blend-mode: difference;
+        }
+
+        .trail {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(45deg, red, gold);
+            clip-path: polygon(0 0, 100% 50%, 0 100%);
+            pointer-events: none;
+            mix-blend-mode: difference;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div id="root" class="container"></div>
+
+    <!-- React and ReactDOM scripts -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- Your React code -->
+    <script type="text/babel">
+        function App() {
+            const handleReload = () => {
+                window.location.reload();
+            };
+
+            return (
+                <div>
+                    <button onClick={handleReload} className="reload-button">Tap to decrypt ></button>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+
+    <!-- Cursor trail script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cursor = document.createElement('div');
+            cursor.className = 'cursor';
+            document.body.appendChild(cursor);
+
+            const trailElements = [];
+            const trailLength = 20;
+
+            for (let i = 0; i < trailLength; i++) {
+                const trail = document.createElement('div');
+                trail.className = 'trail';
+                trail.style.transition = `transform ${0.1 + i * 0.05}s ease-out`;
+                trailElements.push(trail);
+                document.body.appendChild(trail);
+            }
+
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
+
+                trailElements.forEach((trail, index) => {
+                    setTimeout(() => {
+                        trail.style.transform = `translate(${e.clientX - 7.5}px, ${e.clientY - 7.5}px)`;
+                    }, index * 20);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
